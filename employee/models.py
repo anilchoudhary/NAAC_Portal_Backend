@@ -5,6 +5,8 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 
 # Create your models here.
+
+
 class EmployeeManager(BaseUserManager):
     use_in_migrations = True
 
@@ -20,7 +22,7 @@ class EmployeeManager(BaseUserManager):
             raise ValueError('Instructor ID is not set')
 
         email = self.normalize_email(email)
-        user = self.model(email=email,  **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -41,11 +43,13 @@ class EmployeeManager(BaseUserManager):
 
 
 class Employee(AbstractBaseUser, PermissionsMixin):
-    instructor_id = models.CharField(max_length=10, primary_key=True, verbose_name='Employee ID')
+    instructor_id = models.CharField(
+        max_length=10, primary_key=True, verbose_name='Employee ID')
     name = models.CharField("Name", max_length=200)
-    email = models.EmailField("Email",max_length=200)
+    email = models.EmailField("Email", max_length=200)
     phone = models.BigIntegerField("Phone", blank=True, null=True)
-    date_of_joining = models.TextField("Date of Joining", max_length=1000, blank=True, null=True)
+    date_of_joining = models.TextField(
+        "Date of Joining", max_length=1000, blank=True, null=True)
     password = models.CharField("Password", max_length=100)
     designation = models.CharField("Designation", max_length=100)
     room_no = models.CharField("Room No", max_length=10)
@@ -53,13 +57,13 @@ class Employee(AbstractBaseUser, PermissionsMixin):
     salt = models.TextField(blank=True, null=True)
     csrf_token = models.CharField("CSRF Token", max_length=20, default="null")
 
-    #new argument
+    # new argument
     is_active = models.BooleanField(default=True)
     is_allowed = models.BooleanField(default=False, blank=True)
     is_staff = models.BooleanField(default=False)
     REQUIRED_FIELDS = ['password', 'email']
     USERNAME_FIELD = 'instructor_id'
-    EMAIL_FIELD='email'
+    EMAIL_FIELD = 'email'
 
     objects = EmployeeManager()
 
@@ -80,7 +84,8 @@ class Employee(AbstractBaseUser, PermissionsMixin):
 
 
 class DontFill(models.Model):
-    employee = models.ForeignKey(Employee, related_name='employee_fs', primary_key=True, on_delete=models.PROTECT)
+    employee = models.ForeignKey(
+        Employee, related_name='employee_fs', primary_key=True, on_delete=models.PROTECT)
     awards = models.BooleanField("Awards", default=False)
     extra = models.BooleanField("Extra", default=False)
     guest_lecture = models.BooleanField("GuestLecturer", default=False)

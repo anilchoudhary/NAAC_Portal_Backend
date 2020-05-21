@@ -105,7 +105,8 @@ def login(request):
         a = Employee.objects.filter(instructor_id=username)
         if a.exists():
             if len(a[0].password) == 32:
-                pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
+                # pass_str = hashlib.md5((str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
+                pass_str = hashlib.md5((str(a[0].salt) + str(a[0].password) + str(ck)).encode('utf-8')).hexdigest()
             else:
                 pass_hashed = hashlib.md5((a[0].password).encode('utf-8')).hexdigest()
                 pass_str = hashlib.md5((str(a[0].salt) + str(pass_hashed) + str(ck)).encode('utf-8') ).hexdigest()
@@ -1016,6 +1017,11 @@ def generate_jwt_token(user):
     token = jwt_encode_handler(payload)
     return token
 
+def jwt_response_payload_handler(token, user=None, request=None):
+    return {
+        'token': token,
+        'user': UserSerializer(user, context={'request': request}).data
+    }
 
 def setCsrf(empid):
     csrfToken = randomword(16)

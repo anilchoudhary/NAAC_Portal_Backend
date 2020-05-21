@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import datetime
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,9 +25,9 @@ PROJECT_NAME = 'naac_portal'
 SECRET_KEY = 'a26^c#&+9l(zkj!ks+a*=l9dgg%6@lfn=j4n^=#^0!zaqnuv%r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['naacportalapi.herokuapp.com', ]
 
 
 # Application definition
@@ -112,8 +113,6 @@ DATABASES = {
 # }
 
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -155,29 +154,33 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, 'staticfiles/'),
-)
-STATIC_ROOT =os.path.normpath(os.path.join(BASE_DIR, 'static'))
-STATIC_URL =  '/static/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATIC_ROOT = (os.path.join(BASE_DIR, 'static'))
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, '/static/'),
+)
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '/images')
 MEDIA_URL = '/images/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('EMAIL_ID', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PWD', '')
+EMAIL_HOST_USER = 'masteranilchoudhary@gmail.com'
+EMAIL_HOST_PASSWORD = 'xgkatbtyeqythinj'
 EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = 'FDAS Team <noreply@FDASportal.com>' 
 
-FRONTEND = os.environ.get('FRONTEND_URL', 'https://sdc-usict.github.io/NAAC')
+FRONTEND = os.environ.get(
+    'FRONTEND_URL', 'https://anilchoudhary.github.io/fdasportal')
 
 
-GOOGLE_RECAPTCHA_SECRET_KEY='6LchXkIUAAAAAE9iYIpMSBZ9Cx-jl8v5Abc7FOp4'
+GOOGLE_RECAPTCHA_SECRET_KEY = '6LcaOeUUAAAAAAXDK3ZnY1A161DIGMsV9Li3RlQ5'
 AUTH_USER_MODEL = 'employee.Employee'
 
 REST_FRAMEWORK = {
@@ -192,7 +195,39 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3000),
+    'JWT_ENCODE_HANDLER':
+    'rest_framework_jwt.utils.jwt_encode_handler',
+
+    'JWT_DECODE_HANDLER':
+    'rest_framework_jwt.utils.jwt_decode_handler',
+
+    'JWT_PAYLOAD_HANDLER':
+    'rest_framework_jwt.utils.jwt_payload_handler',
+
+    'JWT_PAYLOAD_GET_USER_ID_HANDLER':
+    'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
+
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    'rest_framework_jwt.utils.jwt_response_payload_handler',
+
+    # 'JWT_SECRET_KEY': SECRET_KEY,
+    # 'JWT_GET_USER_SECRET_KEY': None,
+    # 'JWT_PUBLIC_KEY': None,
+    # 'JWT_PRIVATE_KEY': None,
+    # 'JWT_ALGORITHM': 'HS256',
+    # 'JWT_VERIFY': True,
+    # 'JWT_VERIFY_EXPIRATION': True,
+    # 'JWT_LEEWAY': 0,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    # 'JWT_AUDIENCE': None,
+    # 'JWT_ISSUER': None,
+
     'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=3000),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
+
+    # 'JWT_AUTH_HEADER_PREFIX': 'JWT',
+    # 'JWT_AUTH_COOKIE': None,
 }
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())

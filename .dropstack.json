@@ -1,9 +1,0 @@
-{
-  "variables": "",
-  "instances": 1,
-  "type": "docker",
-  "excludes": [],
-  "stateful": false,
-  "name": "rzzylskh",
-  "serviceUrl": "rzzylskh.cloud.dropstack.run"
-}
